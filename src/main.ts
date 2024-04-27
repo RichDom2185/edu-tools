@@ -1,3 +1,5 @@
+import VueLatex from "@richdom2185/vue-latex";
+import "katex/dist/katex.min.css";
 import PrimeVue from "primevue/config";
 import "primevue/resources/themes/aura-light-green/theme.css";
 import { createApp } from "vue";
@@ -10,4 +12,5 @@ const app = createApp(App);
 app.directive("debounce", vueDebounce({ lock: true }));
 app.use(router);
 app.use(PrimeVue);
+app.use(VueLatex);
 app.mount("#app");

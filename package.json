@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@richdom2185/vue-latex": "^0.1.2",
+    "katex": "^0.16.10",
     "primevue": "^3.51.0",
     "vue": "^3.4.25",
     "vue-debounce": "^5.0.0",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@types/katex": "^0.16.7",
     "@vitejs/plugin-vue": "^5.0.4",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
