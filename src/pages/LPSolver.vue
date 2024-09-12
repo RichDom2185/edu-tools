@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import InputNumber from "primevue/inputnumber";
-import { Ref, ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
+import StandardForm from "../components/lpSolver/StandardForm.vue";
+import { matrixToLatex } from "../utils/latex";
+import LPSolver from "../utils/lpSolver";
 
 const numRows = ref(2);
 const numCols = ref(2);
@@ -62,6 +65,22 @@ watch(numRows, (newRows) => {
     rhs.value.length = newRows;
   }
 });
+
+const preview = computed(() => {
+  const A = matrixToLatex(matrix.value);
+  const x = matrixToLatex(
+    Array.from({ length: numCols.value }, (_, i) => [`x_${i + 1}`])
+  );
+  const b = matrixToLatex(rhs.value.map((val) => [val]));
+  return `\\bold{A} = ${A}, \\bold{x} = ${x}, \\bold{b} = ${b}`;
+});
+
+const fullRankMatrices = ref<Array<number[][]>>([]);
+const calculateFullRankMatrices = () => {
+  const lp = new LPSolver(matrix.value, rhs.value, operators.value);
+  lp.toStandardForm();
+  fullRankMatrices.value = lp.getFullRankMatrices();
+};
 </script>
 
 <template>
@@ -109,5 +128,25 @@ watch(numRows, (newRows) => {
         </td>
       </tr>
     </table>
+  </div>
+  <hr />
+  <div>
+    <h2>Matrix Preview</h2>
+    <div v-html="$latex(preview)" />
+  </div>
+  <hr />
+  <h3>Step 0: Convert to Standard Form</h3>
+  <StandardForm :A="matrix" :b="rhs" :operators="operators" />
+  <hr />
+  <h3>Step 1: Generate Full Rank Matrices</h3>
+  <button @click="calculateFullRankMatrices">
+    Generate Full Rank Matrices
+  </button>
+  <div v-if="fullRankMatrices.length > 0">
+    <h4>Full Rank Matrices</h4>
+    <div v-for="(m, index) in fullRankMatrices" :key="index">
+      <h5>Matrix {{ index + 1 }}</h5>
+      <div v-html="$latex(matrixToLatex(m))" />
+    </div>
   </div>
 </template>
